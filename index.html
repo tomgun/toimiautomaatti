@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Aamutoimiautomaatti</title>
+        
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <script>
+        
+    document.addEventListener("DOMContentLoaded", function(event) { 
+       init();
+    });
+        
+    function init() {
+        // Check browser support
+        if (typeof(Storage) !== "undefined") {
+            if (localStorage.getItem("restoreState") == "true") {
+            restoreState();
+            }
+        } else {
+            document.getElementById("todo").innerHTML = "Sorry, your browser does not support Web Storage...";
+        }
+    }
+                
+    function saveState() {
+        localStorage.setItem("todoItems", document.getElementById("firstTodo").innerHTML);
+        localStorage.setItem("doneItems", document.getElementById("firstDone").innerHTML);
+        localStorage.setItem("restoreState", "true");
+    }  
+        
+    function restoreState() {
+        document.getElementById("firstTodo").innerHTML = localStorage.getItem("todoItems");
+        document.getElementById("firstDone").innerHTML = localStorage.getItem("doneItems");
+    }    
+        
+    function reset() {
+        localStorage.clear();
+        localStorage.setItem("restoreState", "false");
+        location.reload();
+    }
+        
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+        saveState();
+    }
+</script>
+</head>
+<body>
+
+<h1>Aamutoimiautomaatti</h1>
+<p>Lilia & Osmo edition</p>
+
+<div class="container">
+<div class="todo" id="firstTodo" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h3>Tehtävä tämä</h3>
+    <img src="http://www.thiscozyplace.com/wp-content/uploads/2016/06/toothbrush.png" draggable="true" ondragstart="drag(event)" id="toothbrush"/>
+    <img src="http://images.esellerpro.com/2316/I/290/42/Super%20Hero%20Gallery1_edited-1.jpg" draggable="true" ondragstart="drag(event)" id="clothes"/>
+    <img src="https://images-na.ssl-images-amazon.com/images/I/51XALEKZ-7L.jpg" draggable="true" ondragstart="drag(event)" id="potty"/>
+</div>
+
+<div class="done" id="firstDone" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Tehty</h3></div>
+    
+</div>    
+<button type="button" id="reset" onClick="reset()">Uusi päivä</button>    
+</body>
+</html>
